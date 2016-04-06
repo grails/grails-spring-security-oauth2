@@ -58,7 +58,7 @@ or `extends grails.plugins.s2oauth.S2oauthAbstractScribeProviderService`
 Create token class in `src/main/groovy`:
 
 ```groovy
-class DummyS2oauthToken extends grails.plugins.s2oauth.S2oauthToken {
+class DummyS2oauthToken extends org.grails.plugins.springsecurity.oauth2.S2oauthToken {
     // ...
 }
 ```

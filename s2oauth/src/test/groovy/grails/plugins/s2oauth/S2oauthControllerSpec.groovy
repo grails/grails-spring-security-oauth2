@@ -1,6 +1,7 @@
 package grails.plugins.s2oauth
 
 import grails.test.mixin.TestFor
+import grails.plugin.springsecurity.oauth2.OAuth2SpringToken
 import spock.lang.Specification
 import org.scribe.model.Token
 import grails.plugin.springsecurity.userdetails.GrailsUser
@@ -53,7 +54,7 @@ class S2oauthControllerSpec extends Specification {
     // now askToLinkOrCreateAccountUri is hardcoded, so this test is redundant
     def "onSuccess should throw exception if askToLinkOrCreateAccountUri is not set"() {
         given:
-            S2oauthToken authToken = Mock()
+            OAuth2SpringToken authToken = Mock()
             params.provider = provider
             def providerkey = "${provider}_oauth_session_key"
             session[providerkey] = "${provider}_oauth_session_key"
@@ -74,7 +75,7 @@ class S2oauthControllerSpec extends Specification {
 
     def "onSuccess should redirect to askToLinkOrCreateAccountUri if the user is not logged in"() {
         given:
-            S2oauthToken authToken = Mock()
+            OAuth2SpringToken authToken = Mock()
             params.provider = provider
             def providerkey = "${provider}_oauth_session_key"
             session[providerkey] = "${provider}aaa"
@@ -99,7 +100,7 @@ class S2oauthControllerSpec extends Specification {
             def token = Stub(Token) {
                 getRawResponse() >> "a=1&b=2"
             }
-            S2oauthToken authToken = new TestOAuthToken(token, false)
+            OAuth2SpringToken authToken = new TestOAuthSpringToken(token, false)
             params.provider = provider
             def providerkey = "${provider}_oauth_session_key"
             session[providerkey] = "${provider}aaa"
@@ -132,8 +133,8 @@ class S2oauthControllerSpec extends Specification {
 /**
  * A basic implementation for oauth token for a loggedin user.
  */
-class TestOAuthToken extends S2oauthToken {
-    TestOAuthToken(def token, def json) {
+class TestOAuthSpringToken extends OAuth2SpringToken {
+    TestOAuthSpringToken(def token, def json) {
         super(token, json)
         this.principal = new GrailsUser("username", "password", true, true, true, true, [], 1L)
     }

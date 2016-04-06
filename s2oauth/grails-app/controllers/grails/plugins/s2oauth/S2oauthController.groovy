@@ -2,6 +2,7 @@ package grails.plugins.s2oauth
 
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.userdetails.GrailsUser
+import grails.plugin.springsecurity.oauth2.OAuth2SpringToken
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.SecurityContextHolder
@@ -81,7 +82,7 @@ public static final String SPRING_SECURITY_OAUTH_TOKEN = 'springSecurityOAuthTok
         }
         // Create the relevant authentication token and attempt to log in.
         log.warn " >>>>>> ${providerName} s2oauthService.createAuthToken"
-        S2oauthToken oAuthToken = s2oauthService.createAuthToken(providerName, session[sessionKey])
+        OAuth2SpringToken oAuthToken = s2oauthService.createAuthToken(providerName, session[sessionKey])
         log.warn " <<<<<< ${providerName} s2oauthService.createAuthToken"
         if (oAuthToken.principal instanceof GrailsUser) {
             authenticateAndRedirect(oAuthToken, getDefaultTargetUrl())
@@ -112,7 +113,7 @@ public static final String SPRING_SECURITY_OAUTH_TOKEN = 'springSecurityOAuthTok
         log.warn "now chooseaccount"
         if (springSecurityService.isLoggedIn()) {
             def currentUser = springSecurityService.getCurrentUser()
-            S2oauthToken oAuthToken = session[SPRING_SECURITY_OAUTH_TOKEN]
+            OAuth2SpringToken oAuthToken = session[SPRING_SECURITY_OAUTH_TOKEN]
             if (!oAuthToken) {
                 log.warn "askToLinkOrCreateAccount: OAuthToken not found in session"
                 throw new S2oauthException('Authentication error')
@@ -129,7 +130,7 @@ public static final String SPRING_SECURITY_OAUTH_TOKEN = 'springSecurityOAuthTok
 
     def linkAccount(OAuthLinkAccountCommand command) {
         log.warn "linkaccount ${command}"
-        S2oauthToken oAuthToken = session[SPRING_SECURITY_OAUTH_TOKEN]
+        OAuth2SpringToken oAuthToken = session[SPRING_SECURITY_OAUTH_TOKEN]
         if (!oAuthToken) {
             log.warn "linkAccount: OAuthToken not found in session"
             throw new S2oauthException('Authentication error')
@@ -159,7 +160,7 @@ public static final String SPRING_SECURITY_OAUTH_TOKEN = 'springSecurityOAuthTok
 
     def createAccount(OAuthCreateAccountCommand command) {
         log.warn "createaccount ${command}"
-        S2oauthToken oAuthToken = session[SPRING_SECURITY_OAUTH_TOKEN]
+        OAuth2SpringToken oAuthToken = session[SPRING_SECURITY_OAUTH_TOKEN]
         if (!oAuthToken) {
             log.warn "createAccount: OAuthToken not found in session"
             throw new S2oauthException('Authentication error')
@@ -203,7 +204,7 @@ public static final String SPRING_SECURITY_OAUTH_TOKEN = 'springSecurityOAuthTok
         return [uri: (config.successHandler.defaultTargetUrl ?: defaultUrlOnNull)]
     }
 
-    protected void authenticateAndRedirect(S2oauthToken oAuthToken, redirectUrl) {
+    protected void authenticateAndRedirect(OAuth2SpringToken oAuthToken, redirectUrl) {
         session.removeAttribute SPRING_SECURITY_OAUTH_TOKEN
         SecurityContextHolder.context.authentication = oAuthToken
         String rememberMeParameterName = getRememberMeParameterName()

@@ -5,6 +5,7 @@ import grails.web.servlet.mvc.GrailsParameterMap
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.userdetails.GormUserDetailsService
 import grails.plugin.springsecurity.userdetails.GrailsUser
+import grails.plugin.springsecurity.oauth2.OAuth2SpringToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.scribe.model.Token
 import org.scribe.model.Verifier
@@ -89,10 +90,10 @@ class S2oauthService {
         providerService.init(providerConfig)
     }
 
-    S2oauthToken createAuthToken(String providerId, Token scribeToken) {
+    OAuth2SpringToken createAuthToken(String providerId, Token scribeToken) {
         log.warn "createAuthToken scribe token ${scribeToken}"
         S2oauthProviderService providerService = s2oauthProviderService(providerId)
-        S2oauthToken oAuthToken = providerService.createAuthToken(scribeToken)
+        OAuth2SpringToken oAuthToken = providerService.createAuthToken(scribeToken)
         log.warn "createAuthToken oAuthToken from provider service= ${oAuthToken}"
         // def OAuthID = lookupOAuthIdClass()
         // def oAuthID = OAuthID.findByProviderAndAccessToken(oAuthToken.providerName, oAuthToken.socialId)
@@ -102,7 +103,7 @@ class S2oauthService {
         return oAuthToken
     }
 
-    S2oauthToken updateOAuthToken(S2oauthToken oAuthToken, user) {
+    OAuth2SpringToken updateOAuthToken(OAuth2SpringToken oAuthToken, user) {
         // user
         String usernamePropertyName = securityConfig.userLookup.usernamePropertyName
         String passwordPropertyName = securityConfig.userLookup.passwordPropertyName
@@ -148,7 +149,7 @@ class S2oauthService {
     }
 
     @SuppressWarnings('VariableName')
-    def createUser(command, S2oauthToken oAuthToken) {
+    def createUser(command, OAuth2SpringToken oAuthToken) {
         def User = lookupUserClass()
         def user = User.newInstance()
         //User user = new User(username: command.username, password: command.password1, enabled: true)

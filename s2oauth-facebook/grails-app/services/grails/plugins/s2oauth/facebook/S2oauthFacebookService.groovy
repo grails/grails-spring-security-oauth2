@@ -2,13 +2,12 @@ package grails.plugins.s2oauth.facebook
 
 import grails.plugins.s2oauth.S2oauthAbstractScribeProviderService
 import grails.plugins.s2oauth.S2oauthProviderConfiguration
-import grails.plugins.s2oauth.S2oauthToken
+import grails.plugin.springsecurity.oauth2.OAuth2SpringToken
 import grails.plugins.s2oauth.OauthVersion
 import grails.plugins.s2oauth.S2oauthException
 import grails.transaction.Transactional
 import grails.converters.JSON
 import org.scribe.model.Token
-import org.scribe.model.Response
 import org.scribe.oauth.OAuthService
 import org.scribe.builder.api.FacebookApi
 
@@ -44,7 +43,7 @@ class S2oauthFacebookService extends S2oauthAbstractScribeProviderService {
         return new Token('', '')
     }
 
-    S2oauthToken createAuthToken(Token accessToken) {
+    OAuth2SpringToken createAuthToken(Token accessToken) {
         // Untyped to help unit tests
         def response = oauthResourceService.get(PROVIDER_ID, PROFILE_URL, accessToken)
         def user
@@ -59,7 +58,7 @@ class S2oauthFacebookService extends S2oauthAbstractScribeProviderService {
             log.error "No user id from Facebook. Response:\n${response.body}"
             throw new S2oauthException("No user id from Facebook")
         }
-        return new FacebookS2oauthToken(accessToken, user.id)
+        return new FacebookOAuth2SpringToken(accessToken, user.id)
     }
 
     String providerId() {

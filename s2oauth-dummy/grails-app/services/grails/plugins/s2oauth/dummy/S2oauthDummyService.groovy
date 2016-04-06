@@ -3,7 +3,7 @@ package grails.plugins.s2oauth.dummy
 import grails.transaction.Transactional
 import grails.plugins.s2oauth.S2oauthProviderService
 import grails.plugins.s2oauth.S2oauthProviderConfiguration
-import grails.plugins.s2oauth.S2oauthToken
+import grails.plugin.springsecurity.oauth2.OAuth2SpringToken
 import grails.plugins.s2oauth.OauthVersion
 import org.scribe.model.Token
 import org.scribe.model.Verifier
@@ -38,9 +38,9 @@ class S2oauthDummyService implements S2oauthProviderService {
         return new Token(DUMMY_KEY, '')
     }
 
-    S2oauthToken createAuthToken(Token accessToken) {
+    OAuth2SpringToken createAuthToken(Token accessToken) {
         Token token = new Token(DUMMY_KEY, '', DUMMY_RAW_RESPONSE)
-        return new DummyS2oauthToken(token, 'user.id')
+        return new DummyOAuth2SpringToken(token, 'user.id')
     }
 
     String providerId() {
