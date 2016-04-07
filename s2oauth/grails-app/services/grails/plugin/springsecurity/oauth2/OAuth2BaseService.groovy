@@ -2,9 +2,17 @@ package grails.plugin.springsecurity.oauth2
 
 import com.github.scribejava.core.model.OAuth2AccessToken
 import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.oauth2.exception.OAuth2Exception
+import grails.plugin.springsecurity.oauth2.service.OAuth2AbstractProviderService
+import grails.plugin.springsecurity.oauth2.service.OAuth2ProviderService
+import grails.plugin.springsecurity.oauth2.token.OAuth2SpringToken
+import grails.plugin.springsecurity.oauth2.util.OAuth2ProviderConfiguration
 import grails.plugin.springsecurity.userdetails.GormUserDetailsService
 import grails.plugin.springsecurity.userdetails.GrailsUser
-import grails.plugin.springsecurity.oauth2.exception.OAuth2Exception
+import org.apache.commons.lang.exception.ExceptionUtils
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 
 class OAuth2BaseService {
@@ -12,9 +20,10 @@ class OAuth2BaseService {
     /**
      * Map for storing the different OAuth2Provider
      */
-    Map<String, OAuth2ProviderService> providerServiceMap = new HashMap<>()
+    Map<String, OAuth2AbstractProviderService> providerServiceMap = new HashMap<>()
 
     def grailsApplication
+    AuthenticationManager authenticationManager
 
     OAuth2SpringToken createAuthToken(String providerName, OAuth2AccessToken scribeToken) {
         def providerService = getProviderService(providerName)
@@ -27,6 +36,38 @@ class OAuth2BaseService {
         return oAuthToken
     }
 
+    /**
+     * @param providerName
+     * @return The authorization url for the provider
+     */
+    String getAuthorizationUrl(String providerName) {
+        OAuth2AbstractProviderService providerService = getProviderService(providerName)
+        providerService.getAuthUrl()
+    }
+
+    /**
+     * @param username
+     * @param password
+     * @return Whether the authentication is valid or not
+     */
+    boolean authenticationIsValid(String username, String password) {
+        boolean valid = true
+        try {
+            authenticationManager.authenticate new UsernamePasswordAuthenticationToken(username, password)
+        } catch (AuthenticationException exception) {
+            log.warn("Authentication is invalid")
+            log.trace(ExceptionUtils.getStackTrace(exception))
+            valid = false
+        }
+        return valid
+    }
+
+    /**
+     * Update the oAuthToken
+     * @param oAuthToken
+     * @param user
+     * @return A current OAuth2SpringToken
+     */
     OAuth2SpringToken updateOAuthToken(OAuth2SpringToken oAuthToken, user) {
         def conf = SpringSecurityUtils.securityConfig
 
@@ -127,11 +168,11 @@ class OAuth2BaseService {
     }
 
     /**
-     * Get OAuth2ProviderService
+     * Get OAuth2AbstractProviderService
      * @param providerID
-     * @return An OAuth2ProviderService implementation
+     * @return An OAuth2AbstractProviderService implementation
      */
-    def OAuth2ProviderService getProviderService(String providerID) {
+    def OAuth2AbstractProviderService getProviderService(String providerID) {
         if (!providerServiceMap.get(providerID)) {
             log.error("There is no providerService for " + providerID)
             throw new OAuth2Exception("No provider '${providerID}'")
@@ -160,5 +201,55 @@ class OAuth2BaseService {
      */
     protected Class<?> lookupOAuthIdClass() {
         grailsApplication.getDomainClass(lookupOAuthIdClassName()).clazz
+    }
+
+    /**
+     * @return The user class name
+     */
+    protected String lookupUserClassName() {
+        SpringSecurityUtils.securityConfig.userLookup.userDomainClassName
+    }
+
+    /**
+     * @return The user class
+     */
+    protected Class<?> lookupUserClass() {
+        grailsApplication.getDomainClass(lookupUserClassName()).clazz
+    }
+
+    /**
+     * @return The UserRole class name
+     */
+    protected String lookupUserRoleClassName() {
+        SpringSecurityUtils.securityConfig.userLookup.authorityJoinClassName
+    }
+
+    /**
+     * @return The UserRole class
+     */
+    protected Class<?> lookupUserRoleClass() {
+        grailsApplication.getDomainClass(lookupUserRoleClassName()).clazz
+    }
+
+    /**
+     * @return The Role class name
+     */
+    protected String lookupRoleClassName() {
+        SpringSecurityUtils.securityConfig.authority.className
+    }
+
+    /**
+     * @return The Role class
+     */
+    protected Class<?> lookupRoleClass() {
+        grailsApplication.getDomainClass(lookupRoleClassName()).clazz
+    }
+
+    /**
+     * @return The role names for a newly registered user
+     */
+    def getRoleNames() {
+        def roleNames = grailsApplication.config.grails.plugin.springsecurity.oauth.registration.roleNames ?: ['ROLE_USER']
+        return roleNames
     }
 }

@@ -52,13 +52,13 @@ Create the plugin service:
 
     grails create-service grails.plugins.s2oauth.dummy.S2oauthDummy
 
-Edit the service with `implements grails.plugins.s2oauth.S2oauthProviderService`
-or `extends grails.plugins.s2oauth.S2oauthAbstractScribeProviderService`
+Edit a service implementing `grails.plugin.springsecurity.oauth2.service.OAuth2ProviderService`
+or extending `grails.plugin.springsecurity.oauth2.service.OAuth2AbstractProviderService`
 
-Create token class in `src/main/groovy`:
+Create token class in `src/main/groovy` that is extending `grails.plugin.springsecurity.oauth2.token.OAuth2SpringToken`:
 
 ```groovy
-class DummyS2oauthToken extends org.grails.plugins.springsecurity.oauth2.S2oauthToken {
+class OAuth2DummyToken extends grails.plugin.springsecurity.oauth2.token.OAuth2SpringToken {
     // ...
 }
 ```
