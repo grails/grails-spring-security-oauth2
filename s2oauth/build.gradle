@@ -65,7 +65,7 @@ dependencies {
     // compile 'org.pac4j:pac4j-oauth:1.7.1'
 //    compile 'org.scribe:scribe:1.3.7'
 
-    provided 'org.grails.plugins:spring-security-core:3.0.3'
+    provided 'org.grails.plugins:spring-security-core:3.+'
     compile 'com.github.scribejava:scribejava-apis:2.5.2'
     compile 'com.ning:async-http-client:1.6.3'
 

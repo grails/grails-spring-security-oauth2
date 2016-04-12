@@ -2,8 +2,9 @@ package grails.plugin.springsecurity.oauth2
 
 import grails.plugin.springsecurity.oauth2.service.OAuth2ProviderService
 import grails.plugins.Plugin
+import groovy.util.logging.Slf4j
 
-@SuppressWarnings('PackageName')
+@Slf4j
 class OAuth2GrailsPlugin extends Plugin {
 
     // the version or versions of Grails the plugin is designed for
@@ -47,6 +48,7 @@ class OAuth2GrailsPlugin extends Plugin {
     }
 
     void doWithApplicationContext() {
+        log.trace("doWithApplicationContext")
         //TODO
         def OAuth2BaseService oAuth2BaseService = grailsApplication.mainContext.getBean('OAuth2BaseService') as OAuth2BaseService
         for (serviceClass in grailsApplication.serviceClasses) {
