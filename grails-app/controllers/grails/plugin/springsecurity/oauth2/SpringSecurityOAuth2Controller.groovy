@@ -19,9 +19,9 @@ import com.sun.istack.internal.Nullable
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.annotation.Secured
-import grails.plugin.springsecurity.userdetails.GrailsUser
 import grails.plugin.springsecurity.oauth2.exception.OAuth2Exception
 import grails.plugin.springsecurity.oauth2.token.OAuth2SpringToken
+import grails.plugin.springsecurity.userdetails.GrailsUser
 import org.apache.commons.lang.StringUtils
 import org.apache.commons.lang.exception.ExceptionUtils
 import org.grails.validation.routines.UrlValidator
@@ -222,8 +222,12 @@ class SpringSecurityOAuth2Controller {
                     def Role = springSecurityOauth2BaseService.lookupRoleClass()
                     def roles = springSecurityOauth2BaseService.roleNames
                     for (roleName in roles) {
-                        UserRole.create user, Role.findByAuthority(roleName)
+                        log.debug("Creating role " + roleName + " for user " + user.username)
+                        // Make sure that the role exists.
+                        UserRole.create user, Role.findOrSaveByAuthority(roleName)
                     }
+                    // make sure that the new roles are effective immediately
+                    springSecurityService.reauthenticate(user.username)
                     oAuth2SpringToken = springSecurityOauth2BaseService.updateOAuthToken(oAuth2SpringToken, user)
                     true
                 }
