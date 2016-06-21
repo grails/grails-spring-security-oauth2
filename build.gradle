@@ -61,8 +61,8 @@ task wrapper(type: Wrapper) {
 
 grailsPublish {
 //     TODO: Provide values here
-    user = project.bintray_user
-    key = project.bintray_key
+    user = project.bintray_user ?: ''
+    key = project.bintray_key ?: ''
     githubSlug = 'MatrixCrawler/grails-spring-security-oauth2'
     license {
         name = 'Apache-2.0'
