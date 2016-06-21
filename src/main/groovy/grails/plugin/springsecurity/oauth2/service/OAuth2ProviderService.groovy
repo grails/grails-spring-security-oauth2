@@ -56,6 +56,11 @@ interface OAuth2ProviderService {
     String getScopes()
 
     /**
+     * Get separator string for concatenating the mandatory and the optional scopes
+     */
+    String getScopeSeparator()
+
+    /**
      * @param accessToken
      * @return
      */

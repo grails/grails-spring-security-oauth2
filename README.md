@@ -16,7 +16,7 @@ Add the following dependencies in `build.gradle`
 dependencies {
 ...
     compile 'org.grails.plugins:spring-security:3.+'
-    compile 'org.grails.plugins:spring-security-oauth2:1.0.0'
+    compile 'org.grails.plugins:spring-security-oauth2:1.1.0'
 ...
 }
 ```

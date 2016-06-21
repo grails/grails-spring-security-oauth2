@@ -37,6 +37,7 @@ class SpringSecurityOauth2BaseService {
  * Map for storing the different OAuth2Provider
  */
     Map<String, OAuth2AbstractProviderService> providerServiceMap = new HashMap<>()
+    private Map<String, OAuth2ProviderConfiguration> _providerConfigurationMap = new HashMap<>()
 
     def grailsApplication
     AuthenticationManager authenticationManager
@@ -58,7 +59,7 @@ class SpringSecurityOauth2BaseService {
      */
     String getAuthorizationUrl(String providerName) {
         OAuth2AbstractProviderService providerService = getProviderService(providerName)
-        providerService.getAuthUrl(['scope': providerService.getScopes()])
+        providerService.getAuthUrl(['scope': _providerConfigurationMap.get(providerName).scope])
     }
 
     /**
@@ -131,10 +132,12 @@ class SpringSecurityOauth2BaseService {
             String baseURL = getBaseUrl()
             def callbackURL = getConfigValue(providerService.providerID, "callback") ? baseURL + getConfigValue(providerService.providerID, "callback") : baseURL + "/oauth2/" + providerService.getProviderID() + "/callback"
             log.debug("Callback URL: " + callbackURL)
-            def successUrl = getConfigValue(providerService.providerID, "successUri")? baseURL + getConfigValue(providerService.providerID, "successUri") : null
+            def successUrl = getConfigValue(providerService.providerID, "successUri") ? baseURL + getConfigValue(providerService.providerID, "successUri") : null
             log.debug("Success URL: " + successUrl)
             def failureUrl = getConfigValue(providerService.providerID, "failureUri") ? baseURL + getConfigValue(providerService.providerID, "failureUri") : null
             log.debug("Failure URL: " + failureUrl)
+            def scopes = getConfigValue(providerService.providerID, "scopes") ?: null
+            log.debug("Additional Scopes: " + scopes)
             def apiKey = System.getenv("${providerService.getProviderID().toUpperCase()}_API_KEY") ?: getConfigValue(providerService.providerID, "api_key")
             def apiSecret = System.getenv("${providerService.getProviderID().toUpperCase()}_API_SECRET") ?: getConfigValue(providerService.providerID, "api_secret")
             log.debug("API Key: " + apiKey + ", Secret: " + apiSecret)
@@ -144,15 +147,16 @@ class SpringSecurityOauth2BaseService {
             if (apiSecret == null || apiSecret.isEmpty()) {
                 throw new OAuth2Exception("API Secret for provider '" + providerService.providerID + "' is missing")
             }
-            def providerConfiguration = new OAuth2ProviderConfiguration(
+            _providerConfigurationMap.put(providerService.providerID, new OAuth2ProviderConfiguration(
                     apiKey: apiKey,
                     apiSecret: apiSecret,
                     callbackUrl: callbackURL,
                     successUrl: successUrl,
                     failureUrl: failureUrl,
+                    scope: scopes ? providerService.getScopes() + providerService.scopeSeparator + scopes : providerService.getScopes(),
                     debug: grailsApplication.config.getProperty('oauth2.debug') ? grailsApplication.config.getProperty('oauth2.debug') : false
-            )
-            providerService.init(providerConfiguration)
+            ))
+            providerService.init(_providerConfigurationMap.get(providerService.providerID))
             providerServiceMap.put(providerService.providerID, providerService)
         }
     }

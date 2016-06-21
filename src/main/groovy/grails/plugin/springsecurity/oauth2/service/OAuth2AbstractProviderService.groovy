@@ -55,7 +55,16 @@ abstract class OAuth2AbstractProviderService implements OAuth2ProviderService {
      */
     abstract String getProfileScope()
 
+    /**
+     * The scopes that are at least required by the oauth2 provider, to get an email-address
+     * Additional scopes can be configured in the application.yml
+     */
     abstract String getScopes()
+
+    /**
+     * Get separator string for concatenating the mandatory and the optional scopes
+     */
+    abstract String getScopeSeparator()
 
     /**
      * @param accessToken
@@ -104,9 +113,9 @@ abstract class OAuth2AbstractProviderService implements OAuth2ProviderService {
         if (providerConfiguration.callbackUrl) {
             serviceBuilder.callback(providerConfiguration.callbackUrl)
         }
-        if (providerConfiguration.scope) {
-            serviceBuilder.scope(providerConfiguration.scope)
-        }
+//        if (providerConfiguration.scope) {
+//            serviceBuilder.scope(providerConfiguration.scope)
+//        }
         if (providerConfiguration.debug) {
             serviceBuilder.debug()
         }
