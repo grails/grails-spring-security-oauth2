@@ -135,7 +135,7 @@ class SpringSecurityOAuth2Controller {
                 throw new OAuth2Exception('Authentication error')
             }
             // Try to add the token to the OAuthID's
-            currentUser.addToOAuthIDs(
+            currentUser.addTooAuthIDs(
                     provider: oAuth2SpringToken.providerName,
                     accessToken: oAuth2SpringToken.socialId,
                     user: currentUser
@@ -174,7 +174,7 @@ class SpringSecurityOAuth2Controller {
             boolean linked = commandValid && User.withTransaction { status ->
                 def user = User.findByUsername(command.username)
                 if (user) {
-                    user.addToOAuthIDs(provider: oAuth2SpringToken.providerName, accessToken: oAuth2SpringToken.socialId, user: user)
+                    user.addTooAuthIDs(provider: oAuth2SpringToken.providerName, accessToken: oAuth2SpringToken.socialId, user: user)
                     if (user.validate() && user.save()) {
                         oAuth2SpringToken = springSecurityOauth2BaseService.updateOAuthToken(oAuth2SpringToken, user)
                         return true
@@ -213,7 +213,7 @@ class SpringSecurityOAuth2Controller {
                     user.username = command.username
                     user.password = command.password1
                     user.enabled = true
-                    user.addToOAuthIDs(provider: oAuth2SpringToken.providerName, accessToken: oAuth2SpringToken.socialId, user: user)
+                    user.addTooAuthIDs(provider: oAuth2SpringToken.providerName, accessToken: oAuth2SpringToken.socialId, user: user)
                     if (!user.validate() || !user.save()) {
                         status.setRollbackOnly()
                         false

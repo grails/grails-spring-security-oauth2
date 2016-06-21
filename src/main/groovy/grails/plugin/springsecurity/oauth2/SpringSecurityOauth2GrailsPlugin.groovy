@@ -11,13 +11,12 @@ class SpringSecurityOauth2GrailsPlugin extends Plugin {
 
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "3.1.8 > *"
-//    def dependsOn = ["spring-security-core": "*>3.0.0"]
     List loadAfter = ['spring-security-core']
 
     // TODO Fill in these fields
     def title = "Spring Security Oauth2" // Headline display name of the plugin
     def author = "Johannes Brunswicker"
-    def authorEmail = ""
+    def authorEmail = "johannes.brunswicker@gmail.com"
     def description = '''\
 This plugin provides the capability to authenticate via oauth. Depends on grails-spring-security-core.
 '''
@@ -35,7 +34,7 @@ This plugin provides the capability to authenticate via oauth. Depends on grails
 //    def organization = [ name: "My Company", url: "http://www.my-company.com/" ]
 
     // Any additional developers beyond the author specified above.
-    def developers = [[name: "Johannes Brunswicker", email: "johannes.brunswicker@gmail.com"]]
+//    def developers = [[name: "Johannes Brunswicker", email: "johannes.brunswicker@gmail.com"]]
 
     // Location of the plugin's issue tracker.
 //    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN" ]

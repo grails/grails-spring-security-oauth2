@@ -35,9 +35,9 @@ import grails.plugin.springsecurity.oauth2.util.OAuth2ProviderConfiguration
  */
 abstract class OAuth2AbstractProviderService implements OAuth2ProviderService {
 
-    private OAuth20Service authService
+    private OAuth20Service _authService
 
-    private OAuth2ProviderConfiguration providerConfiguration
+    private OAuth2ProviderConfiguration _providerConfiguration
 
     /**
      * @return The ProviderID
@@ -68,8 +68,8 @@ abstract class OAuth2AbstractProviderService implements OAuth2ProviderService {
      * @param oAuth2ProviderConfiguration
      */
     void init(OAuth2ProviderConfiguration oAuth2ProviderConfiguration) {
-        providerConfiguration = oAuth2ProviderConfiguration
-        authService = buildScribeService(oAuth2ProviderConfiguration)
+        _providerConfiguration = oAuth2ProviderConfiguration
+        _authService = buildScribeService(oAuth2ProviderConfiguration)
     }
 
     /**
@@ -139,4 +139,13 @@ abstract class OAuth2AbstractProviderService implements OAuth2ProviderService {
         authService.signRequest(accessToken, oAuthRequest);
         oAuthRequest.send()
     }
+
+    OAuth20Service getAuthService() {
+        return _authService
+    }
+
+    OAuth2ProviderConfiguration getProviderConfiguration() {
+        return _providerConfiguration
+    }
+
 }
