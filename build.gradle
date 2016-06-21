@@ -1,0 +1,88 @@
+buildscript {
+    ext {
+        grailsVersion = project.grailsVersion
+    }
+    repositories {
+        mavenLocal()
+        maven { url "https://repo.grails.org/grails/core" }
+    }
+    dependencies {
+        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.8.2"
+    }
+}
+
+version "0.7.0"
+group = 'org.grails.plugins'
+
+//apply plugin:"eclipse"
+apply plugin: "idea"
+apply plugin: "org.grails.grails-plugin"
+apply plugin: "org.grails.grails-plugin-publish"
+apply plugin: "org.grails.grails-gsp"
+apply plugin: "asset-pipeline"
+
+ext {
+    grailsVersion = project.grailsVersion
+    gradleWrapperVersion = project.gradleWrapperVersion
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://repo.grails.org/grails/core" }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.grails:grails-bom:$grailsVersion"
+    }
+    applyMavenExclusions false
+}
+
+dependencies {
+    provided 'javax.servlet:javax.servlet-api:3.1.0'
+    provided 'org.grails:grails-dependencies'
+//    provided 'org.grails:grails-web-boot'
+//    provided 'org.springframework.boot:spring-boot-starter-logging'
+
+    compile 'org.codehaus.groovy:groovy-all:2.4.3'
+//    provided 'org.springframework.boot:spring-boot-starter-logging'
+//    provided "org.springframework.boot:spring-boot-starter-actuator"
+//    provided "org.springframework.boot:spring-boot-autoconfigure"
+//    provided "org.springframework.boot:spring-boot-starter-tomcat"
+
+//    provided group: 'org.springframework', name: 'spring-webmvc'
+    provided 'org.grails.plugins:spring-security-core:3.+'
+
+    compile 'com.ning:async-http-client:1.9.38'
+    compile 'org.asynchttpclient:async-http-client:2.0.4'
+    compile 'com.github.scribejava:scribejava-apis:2.7.3'
+
+    testCompile "org.grails:grails-plugin-testing"
+
+    console "org.grails:grails-console"
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = gradleWrapperVersion
+}
+
+grailsPublish {
+//     TODO: Provide values here
+    user = 'user'
+    key = 'key'
+    githubSlug = 'foo/bar'
+    license {
+        name = 'Apache-2.0'
+    }
+    title = "My Plugin"
+    desc = "Full plugin description"
+    developers = [johndoe: "John Doe"]
+    portalUser = ""
+    portalPassword = ""
+}
+
+assets {
+    packagePlugin = true
+}

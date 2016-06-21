@@ -1,0 +1,22 @@
+sudo: false
+
+language: java
+
+jdk:
+    - oraclejdk7
+    - openjdk7
+    - oraclejdk8
+
+branches:
+  only:
+    - master
+
+cache:
+  directories:
+  - $HOME/.grails
+  - $HOME/.gradle
+
+before_script:
+    - chmod +x gradlew
+
+script: ./gradlew clean check
