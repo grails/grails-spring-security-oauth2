@@ -62,6 +62,6 @@ class OAuth2TagLib {
             return false
         }
         def sessionKey = springSecurityOauth2BaseService.sessionKeyForAccessToken(provider)
-        return (session[sessionKey] instanceof OAuth2AccessToken)
+        return (session[sessionKey] && session[sessionKey] instanceof OAuth2AccessToken)
     }
 }

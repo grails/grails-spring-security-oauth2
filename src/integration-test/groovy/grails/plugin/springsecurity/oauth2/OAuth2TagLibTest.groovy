@@ -21,12 +21,12 @@ class OAuth2TagLibTest extends Specification {
         given:
         def springSecurityService = Mock(SpringSecurityService)
         springSecurityService.isLoggedIn() >> {true}
-        def oAuth2BaseService = Mock(SpringSecurityOauth2BaseService)
-        oAuth2BaseService.sessionKeyForAccessToken(provider) >> {'OAuth2: access - t:' + provider}
-        session[oAuth2BaseService.sessionKeyForAccessToken(provider)] = new OAuth2AccessToken("${provider}_token", "${provider}_rawResponse=rawResponse")
+        def springSecurityOauth2BaseService = Mock(SpringSecurityOauth2BaseService)
+        springSecurityOauth2BaseService.sessionKeyForAccessToken(provider) >> {'OAuth2: access - t:' + provider}
+        session[springSecurityOauth2BaseService.sessionKeyForAccessToken(provider)] = new OAuth2AccessToken("${provider}_token", "${provider}_rawResponse=rawResponse")
 
         tagLib.springSecurityService = springSecurityService
-        tagLib.oAuth2BaseService = oAuth2BaseService
+        tagLib.springSecurityOauth2BaseService = springSecurityOauth2BaseService
         def template = "<oauth2:ifLoggedInWith provider=\"${provider}\">Logged in using ${provider}</oauth2:ifLoggedInWith>"
         and:
         def renderedContent = applyTemplate(template)
@@ -44,11 +44,11 @@ class OAuth2TagLibTest extends Specification {
         given:
         def springSecurityService = Mock(SpringSecurityService)
         springSecurityService.isLoggedIn() >> {true}
-        def oAuth2BaseService = Mock(SpringSecurityOauth2BaseService)
-        oAuth2BaseService.sessionKeyForAccessToken(provider) >> {'OAuth2: access - t:' + provider}
-        session[oAuth2BaseService.sessionKeyForAccessToken(provider)] = token
+        def springSecurityOauth2BaseService = Mock(SpringSecurityOauth2BaseService)
+        springSecurityOauth2BaseService.sessionKeyForAccessToken(provider) >> {'OAuth2: access - t:' + provider}
+        session[springSecurityOauth2BaseService.sessionKeyForAccessToken(provider)] = token
         tagLib.springSecurityService = springSecurityService
-        tagLib.oAuth2BaseService = oAuth2BaseService
+        tagLib.springSecurityOauth2BaseService = springSecurityOauth2BaseService
         def template = "<oauth2:ifLoggedInWith provider=\"${provider}\">Logged in using ${provider}</oauth2:ifLoggedInWith>"
         and:
         def renderedContent = applyTemplate(template)
