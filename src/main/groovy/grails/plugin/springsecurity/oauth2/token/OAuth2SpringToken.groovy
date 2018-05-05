@@ -77,7 +77,8 @@ abstract class OAuth2SpringToken extends AbstractAuthenticationToken {
 
     private Map extractParameters(String data, boolean json) {
         if (json) {
-          return JSON.parse(data)
+          // don't return JSON data types because they can't serialize properly in sessions
+          return JSON.parse(data) as HashMap<String,String>
         }
         return data?.split('&')?.collectEntries { it.split('=') as List }
     }
