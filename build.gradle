@@ -12,7 +12,7 @@ buildscript {
     }
 }
 
-version "1.1.2-SNAPSHOT"
+version "1.2.0"
 group = 'org.grails.plugins'
 
 //apply plugin:"eclipse"
@@ -62,15 +62,18 @@ task wrapper(type: Wrapper) {
 grailsPublish {
     user = project.bintray_user ?: ''
     key = project.bintray_key ?: ''
-    githubSlug = 'MatrixCrawler/grails-spring-security-oauth2'
+    githubSlug = 'grails-plugins/grails-spring-security-oauth2'
     license {
         name = 'Apache-2.0'
     }
     title = "Spring Security OAuth2"
-    desc = "This plugin provides the capability to authenticate via oauth. Depends on grails-spring-security-core."
-    developers = [johndoe: "John Doe"]
-    portalUser = ""
-    portalPassword = ""
+    desc = "This plugin provides the capability to authenticate via oauth. Depends on grails-spring-security-core. Start v1.2.x as of fork to grails-plugins organization (This includes 1.1.1 which was not fully release previously."
+    developers = [MatrixCrawler: "Johannes Brunswicker",
+                  aitmanas:"aitmanas",
+    rvanderwerf:"Ryan Vanderwerf"]
+    userOrg = 'grails'
+    //portalUser = ""
+    //portalPassword = ""
 }
 
 assets {
