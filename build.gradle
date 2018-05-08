@@ -60,8 +60,8 @@ task wrapper(type: Wrapper) {
 }
 
 grailsPublish {
-    user = project.bintray_user ?: ''
-    key = project.bintray_key ?: ''
+    user = System.getProperty("BINTRAY_USER")
+    key = System.getProperty("BINTRAY_KEY")
     githubSlug = 'grails-plugins/grails-spring-security-oauth2'
     license {
         name = 'Apache-2.0'
@@ -72,8 +72,6 @@ grailsPublish {
                   aitmanas:"aitmanas",
     rvanderwerf:"Ryan Vanderwerf"]
     userOrg = 'grails'
-    //portalUser = ""
-    //portalPassword = ""
 }
 
 assets {
