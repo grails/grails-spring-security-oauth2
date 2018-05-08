@@ -1,6 +1,6 @@
 Spring Security OAuth2 Plugin
 =======
-[![Build Status](https://travis-ci.org/MatrixCrawler/grails-spring-security-oauth2.svg?branch=master)](https://travis-ci.org/MatrixCrawler/grails-spring-security-oauth2) [ ![Download](https://api.bintray.com/packages/matrixcrawler/plugins/spring-security-oauth2/images/download.svg) ](https://bintray.com/matrixcrawler/plugins/spring-security-oauth2/_latestVersion)
+[![Build Status](https://travis-ci.org/grails-plugins/grails-spring-security-oauth2.svg?branch=master)](https://travis-ci.org/grails-plugins/grails-spring-security-oauth2) [ ![Download](https://api.bintray.com/packages/grails/plugins/spring-security-oauth2/images/download.svg) ](https://bintray.com/grails/plugins/spring-security-oauth2/_latestVersion)
 
 Main differences with the Grails 2 plugin:
 
@@ -49,7 +49,7 @@ Extensions
 ----------
 
 List of known extension
-* [Google](https://github.com/MatrixCrawler/grails-spring-security-oauth2-google)
+* [Google](https://github.com/grails-plugins/grails-spring-security-oauth2-google)
 * [Facebook](https://github.com/MatrixCrawler/grails-spring-security-oauth2-facebook)
 * [Github] (https://github.com/rpalcolea/grails-spring-security-oauth2-github)
 
