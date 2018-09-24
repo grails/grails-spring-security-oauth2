@@ -15,6 +15,7 @@
 package grails.plugin.springsecurity.oauth2
 
 import com.github.scribejava.core.model.OAuth2AccessToken
+import grails.gorm.transactions.Transactional
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.oauth2.exception.OAuth2Exception
 import grails.plugin.springsecurity.oauth2.service.OAuth2AbstractProviderService
@@ -23,7 +24,7 @@ import grails.plugin.springsecurity.oauth2.token.OAuth2SpringToken
 import grails.plugin.springsecurity.oauth2.util.OAuth2ProviderConfiguration
 import grails.plugin.springsecurity.userdetails.GormUserDetailsService
 import grails.plugin.springsecurity.userdetails.GrailsUser
-import grails.transaction.Transactional
+import groovy.util.logging.Slf4j
 import org.apache.commons.lang.exception.ExceptionUtils
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -31,6 +32,7 @@ import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 
 @Transactional
+@Slf4j
 class SpringSecurityOauth2BaseService {
 
 /**
