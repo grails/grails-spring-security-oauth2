@@ -2,7 +2,7 @@ package grails.plugin.springsecurity.oauth2
 
 import com.github.scribejava.core.model.OAuth2AccessToken
 import grails.plugin.springsecurity.SpringSecurityService
-import grails.test.mixin.TestFor
+import grails.testing.web.taglib.TagLibUnitTest
 import spock.lang.Specification
 
 /**
@@ -14,8 +14,7 @@ import spock.lang.Specification
  * Created on 21.06.2016
  * @author MatrixCrawler
  */
-@TestFor(OAuth2TagLib)
-class OAuth2TagLibTest extends Specification {
+class OAuth2TagLibTest extends Specification implements TagLibUnitTest<OAuth2TagLib>{
 
     def "ifLoggedInWith should print body if session is valid"() {
         given:
