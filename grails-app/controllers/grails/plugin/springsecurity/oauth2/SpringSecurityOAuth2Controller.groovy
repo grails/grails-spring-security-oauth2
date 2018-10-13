@@ -22,6 +22,7 @@ import grails.plugin.springsecurity.annotation.Secured
 import grails.plugin.springsecurity.oauth2.exception.OAuth2Exception
 import grails.plugin.springsecurity.oauth2.token.OAuth2SpringToken
 import grails.plugin.springsecurity.userdetails.GrailsUser
+import groovy.util.logging.Slf4j
 import org.apache.commons.lang.StringUtils
 import org.apache.commons.lang.exception.ExceptionUtils
 import org.grails.validation.routines.UrlValidator
@@ -34,6 +35,7 @@ import org.springframework.web.servlet.ModelAndView
  *
  * Based on SpringSecurityOAuthController:2.1.0.RC4
  */
+@Slf4j
 @Secured('permitAll')
 class SpringSecurityOAuth2Controller {
 
