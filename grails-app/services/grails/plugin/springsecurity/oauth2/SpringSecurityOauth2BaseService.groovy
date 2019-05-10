@@ -149,6 +149,12 @@ class SpringSecurityOauth2BaseService {
             if (apiSecret == null || apiSecret.isEmpty()) {
                 throw new OAuth2Exception("API Secret for provider '" + providerService.providerID + "' is missing")
             }
+
+            def connectTimeout = getConfigValue(providerService.providerID, "connectTimeout") as Integer
+            def readTimeout = getConfigValue(providerService.providerID, "readTimeout") as Integer
+
+            log.debug("connectTimeout: $connectTimeout, readTimeout: $readTimeout")
+
             _providerConfigurationMap.put(providerService.providerID, new OAuth2ProviderConfiguration(
                     apiKey: apiKey,
                     apiSecret: apiSecret,
@@ -156,7 +162,9 @@ class SpringSecurityOauth2BaseService {
                     successUrl: successUrl,
                     failureUrl: failureUrl,
                     scope: scopes ? providerService.getScopes() + providerService.scopeSeparator + scopes : providerService.getScopes(),
-                    debug: grailsApplication.config.getProperty('oauth2.debug') ? grailsApplication.config.getProperty('oauth2.debug') : false
+                    debug: grailsApplication.config.getProperty('oauth2.debug') ? grailsApplication.config.getProperty('oauth2.debug') : false,
+                    connectTimeout:connectTimeout,
+                    readTimeout:readTimeout
             ))
             providerService.init(_providerConfigurationMap.get(providerService.providerID))
             providerServiceMap.put(providerService.providerID, providerService)

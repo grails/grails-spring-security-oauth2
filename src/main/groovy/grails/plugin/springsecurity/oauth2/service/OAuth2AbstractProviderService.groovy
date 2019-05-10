@@ -110,6 +110,8 @@ abstract class OAuth2AbstractProviderService implements OAuth2ProviderService {
                 .apiKey(providerConfiguration.apiKey)
                 .apiSecret(providerConfiguration.apiSecret)
                 .state(secretState)
+                .connectTimeout(providerConfiguration.connectTimeout).readTimeout(providerConfiguration.readTimeout)
+
         if (providerConfiguration.callbackUrl) {
             serviceBuilder.callback(providerConfiguration.callbackUrl)
         }
