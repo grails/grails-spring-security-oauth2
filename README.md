@@ -55,7 +55,8 @@ Extensions
 List of known extension
 * [Google](https://github.com/grails-plugins/grails-spring-security-oauth2-google)
 * [Facebook](https://github.com/MatrixCrawler/grails-spring-security-oauth2-facebook)
-* [Github] (https://github.com/rpalcolea/grails-spring-security-oauth2-github)
+* [Github](https://github.com/rpalcolea/grails-spring-security-oauth2-github)
+* [Outlook](https://github.com/andreperegrina/grails-spring-security-oauth2-outlook)
 
 
 How to create a new provider plugin
