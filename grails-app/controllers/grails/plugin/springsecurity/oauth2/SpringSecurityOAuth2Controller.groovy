@@ -55,7 +55,8 @@ class SpringSecurityOAuth2Controller {
         log.debug "authenticate ${providerName}"
         String url = springSecurityOauth2BaseService.getAuthorizationUrl(providerName)
         log.debug "redirect url from s2oauthservice=${url}"
-        if (!UrlValidator.instance.isValid(url)) {
+        UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS)
+        if (!urlValidator.isValid(url)) {
             flash.message = "Authorization url for provider '${providerName}' is invalid."
             redirect(controller: 'login', action: 'index')
         }
