@@ -15,6 +15,7 @@
 package grails.plugin.springsecurity.oauth2
 
 import com.github.scribejava.core.model.OAuth2AccessToken
+import grails.core.GrailsApplication
 import grails.gorm.transactions.Transactional
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.oauth2.exception.OAuth2Exception
@@ -41,7 +42,7 @@ class SpringSecurityOauth2BaseService {
     Map<String, OAuth2AbstractProviderService> providerServiceMap = new HashMap<>()
     private Map<String, OAuth2ProviderConfiguration> _providerConfigurationMap = new HashMap<>()
 
-    def grailsApplication
+    GrailsApplication grailsApplication
     AuthenticationManager authenticationManager
 
     OAuth2SpringToken createAuthToken(String providerName, OAuth2AccessToken scribeToken) {
