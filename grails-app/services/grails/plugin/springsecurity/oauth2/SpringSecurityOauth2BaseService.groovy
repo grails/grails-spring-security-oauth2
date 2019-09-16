@@ -126,7 +126,7 @@ class SpringSecurityOauth2BaseService {
      * Register the provider into the service
      * @param providerService
      */
-    def void registerProvider(OAuth2ProviderService providerService) throws OAuth2Exception {
+    void registerProvider(OAuth2ProviderService providerService) throws OAuth2Exception {
         log.debug("Registering provider: " + providerService.getProviderID())
         if (providerServiceMap.containsKey(providerService.getProviderID())) {
             // There is already a provider under that name
@@ -170,7 +170,7 @@ class SpringSecurityOauth2BaseService {
     /**
      * @return The base url
      */
-    def String getBaseUrl() {
+    String getBaseUrl() {
         grailsApplication.config.getProperty('grails.serverURL') ?: "http://localhost:${System.getProperty('server.port', '8080')}${grailsApplication.mainContext.servletContext.contextPath ?: ''}"
     }
 
@@ -178,7 +178,7 @@ class SpringSecurityOauth2BaseService {
      * @param providerName
      * @return The successurl for the provider service
      */
-    def String getSuccessUrl(String providerName) {
+    String getSuccessUrl(String providerName) {
         def providerService = getProviderService(providerName)
         providerService.successUrl ?: baseUrl + "/oauth2/" + providerName + "/success"
     }
@@ -187,7 +187,7 @@ class SpringSecurityOauth2BaseService {
      * @param providerName
      * @return The failureUrl for the provider service
      */
-    def String getFailureUrl(String providerName) {
+    String getFailureUrl(String providerName) {
         def providerService = getProviderService(providerName)
         providerService.failureUrl ?: baseUrl + "/oauth2/" + providerName + "/success"
     }
@@ -205,7 +205,7 @@ class SpringSecurityOauth2BaseService {
      * @param providerID
      * @return An OAuth2AbstractProviderService implementation
      */
-    def OAuth2AbstractProviderService getProviderService(String providerID) {
+    OAuth2AbstractProviderService getProviderService(String providerID) {
         if (!providerServiceMap.get(providerID)) {
             log.error("There is no providerService for " + providerID)
             throw new OAuth2Exception("No provider '${providerID}'")
