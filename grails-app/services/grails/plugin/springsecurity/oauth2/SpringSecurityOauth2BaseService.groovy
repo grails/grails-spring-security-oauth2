@@ -170,7 +170,7 @@ class SpringSecurityOauth2BaseService {
      * @return The base url
      */
     def String getBaseUrl() {
-        grailsApplication.config.getProperty('grails.serverURL') ?: "http://localhost:${System.getProperty('server.port', '8080')}"
+        grailsApplication.config.getProperty('grails.serverURL') ?: "http://localhost:${System.getProperty('server.port', '8080')}${grailsApplication.mainContext.servletContext.contextPath ?: ''}"
     }
 
     /**
