@@ -41,9 +41,7 @@ dependencyManagement {
 }
 
 dependencies {
-	compile 'com.ning:async-http-client:1.9.38'
-	compile 'org.asynchttpclient:async-http-client:2.0.4'
-	compile 'com.github.scribejava:scribejava-apis:2.7.3'
+	compile 'com.github.scribejava:scribejava-apis:6.8.1'
 
 	console "org.grails:grails-console"
 

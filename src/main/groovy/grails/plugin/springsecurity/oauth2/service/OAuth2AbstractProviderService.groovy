@@ -96,7 +96,11 @@ abstract class OAuth2AbstractProviderService implements OAuth2ProviderService {
      * @return
      */
     String getAuthUrl(Map<String, String> params) {
-        authService.getAuthorizationUrl(params)
+        final String secretState = getProviderID() + "-secret-" + new Random().nextInt(999_999)
+        return authService.createAuthorizationUrlBuilder()
+                .state(secretState)
+                .additionalParams(params)
+                .build()
     }
 
     /**
@@ -105,17 +109,14 @@ abstract class OAuth2AbstractProviderService implements OAuth2ProviderService {
      * @return a scribejava service builder
      */
     OAuth20Service buildScribeService(OAuth2ProviderConfiguration providerConfiguration) {
-        final String secretState = getProviderID() + "-secret-" + new Random().nextInt(999_999)
-        ServiceBuilder serviceBuilder = new ServiceBuilder()
-                .apiKey(providerConfiguration.apiKey)
+        ServiceBuilder serviceBuilder = new ServiceBuilder(providerConfiguration.apiKey)
                 .apiSecret(providerConfiguration.apiSecret)
-                .state(secretState)
         if (providerConfiguration.callbackUrl) {
             serviceBuilder.callback(providerConfiguration.callbackUrl)
         }
-//        if (providerConfiguration.scope) {
-//            serviceBuilder.scope(providerConfiguration.scope)
-//        }
+        if (providerConfiguration.scope) {
+            serviceBuilder.defaultScope(providerConfiguration.scope)
+        }
         if (providerConfiguration.debug) {
             serviceBuilder.debug()
         }
@@ -144,9 +145,9 @@ abstract class OAuth2AbstractProviderService implements OAuth2ProviderService {
      * @return
      */
     Response getResponse(OAuth2AccessToken accessToken) {
-        OAuthRequest oAuthRequest = new OAuthRequest(Verb.GET, getProfileScope(), authService)
-        authService.signRequest(accessToken, oAuthRequest);
-        oAuthRequest.send()
+        OAuthRequest oAuthRequest = new OAuthRequest(Verb.GET, getProfileScope())
+        authService.signRequest(accessToken, oAuthRequest)
+        authService.execute(oAuthRequest)
     }
 
     OAuth20Service getAuthService() {
