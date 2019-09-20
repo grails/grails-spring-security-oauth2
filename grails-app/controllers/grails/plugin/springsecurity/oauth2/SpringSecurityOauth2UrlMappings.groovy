@@ -10,6 +10,7 @@ class SpringSecurityOauth2UrlMappings {
         def active = Holders.grailsApplication.config.grails?.plugin?.springsecurity?.oauth2?.active
         def enabled = (active instanceof Boolean) ? active : true
         if (enabled && SpringSecurityUtils.securityConfig?.active) {
+            "/oauth2/$provider/authenticate"(controller: 'springSecurityOAuth2', action: 'authenticate')
             "/oauth2/$provider/callback"(controller: 'springSecurityOAuth2', action: 'callback')
             "/oauth2/$provider/success"(controller: 'springSecurityOAuth2', action: 'onSuccess')
             "/oauth2/$provider/failure"(controller: 'springSecurityOAuth2', action: 'onFailure')
