@@ -37,7 +37,7 @@ abstract class OAuth2SpringToken extends AbstractAuthenticationToken {
 
     protected OAuth2AccessToken accessToken
     protected Map tokenParams
-    protected Object principal
+    Object principal
     Collection<GrantedAuthority> authorities
 
     /**

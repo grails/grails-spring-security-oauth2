@@ -15,6 +15,7 @@
 package grails.plugin.springsecurity.oauth2
 
 import com.github.scribejava.core.model.OAuth2AccessToken
+import grails.core.GrailsApplication
 import grails.gorm.transactions.Transactional
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.oauth2.exception.OAuth2Exception
@@ -41,7 +42,7 @@ class SpringSecurityOauth2BaseService {
     Map<String, OAuth2AbstractProviderService> providerServiceMap = new HashMap<>()
     private Map<String, OAuth2ProviderConfiguration> _providerConfigurationMap = new HashMap<>()
 
-    def grailsApplication
+    GrailsApplication grailsApplication
     AuthenticationManager authenticationManager
 
     OAuth2SpringToken createAuthToken(String providerName, OAuth2AccessToken scribeToken) {
@@ -61,7 +62,7 @@ class SpringSecurityOauth2BaseService {
      */
     String getAuthorizationUrl(String providerName) {
         OAuth2AbstractProviderService providerService = getProviderService(providerName)
-        providerService.getAuthUrl(['scope': _providerConfigurationMap.get(providerName).scope])
+        providerService.getAuthUrl([:])
     }
 
     /**
@@ -125,7 +126,7 @@ class SpringSecurityOauth2BaseService {
      * Register the provider into the service
      * @param providerService
      */
-    def void registerProvider(OAuth2ProviderService providerService) throws OAuth2Exception {
+    void registerProvider(OAuth2ProviderService providerService) throws OAuth2Exception {
         log.debug("Registering provider: " + providerService.getProviderID())
         if (providerServiceMap.containsKey(providerService.getProviderID())) {
             // There is already a provider under that name
@@ -169,15 +170,15 @@ class SpringSecurityOauth2BaseService {
     /**
      * @return The base url
      */
-    def String getBaseUrl() {
-        grailsApplication.config.getProperty('grails.serverURL') ?: "http://localhost:${System.getProperty('server.port', '8080')}"
+    String getBaseUrl() {
+        grailsApplication.config.getProperty('grails.serverURL') ?: "http://localhost:${System.getProperty('server.port', '8080')}${grailsApplication.mainContext.servletContext.contextPath ?: ''}"
     }
 
     /**
      * @param providerName
      * @return The successurl for the provider service
      */
-    def String getSuccessUrl(String providerName) {
+    String getSuccessUrl(String providerName) {
         def providerService = getProviderService(providerName)
         providerService.successUrl ?: baseUrl + "/oauth2/" + providerName + "/success"
     }
@@ -186,7 +187,7 @@ class SpringSecurityOauth2BaseService {
      * @param providerName
      * @return The failureUrl for the provider service
      */
-    def String getFailureUrl(String providerName) {
+    String getFailureUrl(String providerName) {
         def providerService = getProviderService(providerName)
         providerService.failureUrl ?: baseUrl + "/oauth2/" + providerName + "/success"
     }
@@ -204,7 +205,7 @@ class SpringSecurityOauth2BaseService {
      * @param providerID
      * @return An OAuth2AbstractProviderService implementation
      */
-    def OAuth2AbstractProviderService getProviderService(String providerID) {
+    OAuth2AbstractProviderService getProviderService(String providerID) {
         if (!providerServiceMap.get(providerID)) {
             log.error("There is no providerService for " + providerID)
             throw new OAuth2Exception("No provider '${providerID}'")
