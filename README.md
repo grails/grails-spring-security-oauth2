@@ -1,6 +1,6 @@
 Spring Security OAuth2 Plugin
 =======
-[![Build Status](https://travis-ci.org/grails-plugins/grails-spring-security-oauth2.svg?branch=master)](https://travis-ci.org/grails-plugins/grails-spring-security-oauth2) [ ![Download](https://api.bintray.com/packages/grails/plugins/spring-security-oauth2/images/download.svg) ](https://bintray.com/grails/plugins/spring-security-oauth2/_latestVersion)
+[![Java CI](https://github.com/grails/grails-spring-security-oauth2/actions/workflows/gradle.yml/badge.svg)](https://github.com/grails/grails-spring-security-oauth2/actions/workflows/gradle.yml)
 
 Main differences with the Grails 2 plugin:
 
