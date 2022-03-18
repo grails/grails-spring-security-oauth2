@@ -25,6 +25,10 @@ repositories {
 	maven { url "https://repo.grails.org/grails/core" }
 }
 
+configurations {
+	documentation
+}
+
 dependencies {
 	compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
 	compileOnly 'org.grails:grails-dependencies'
@@ -43,6 +47,8 @@ dependencies {
 	testImplementation "cglib:cglib-nodep:2.2.2"
 	testImplementation "org.grails:grails-gorm-testing-support"
 	testImplementation "org.grails:grails-web-testing-support"
+
+	documentation "com.github.javaparser:javaparser-core:3.15.14"
 }
 
 grailsPublish {
@@ -111,4 +117,8 @@ tasks.register("docs") {
 	doLast {
 		new File(buildDir, 'docs/ghpages.html') << file('src/docs/index.tmpl').text.replaceAll('@VERSION@', project.version)
 	}
+}
+
+configure([groovydoc]) {
+	classpath += configurations.documentation
 }
