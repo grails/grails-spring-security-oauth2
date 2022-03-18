@@ -5,6 +5,7 @@ buildscript {
 	dependencies {
 		classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
 		classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.2.4"
+		classpath "org.asciidoctor:asciidoctor-gradle-jvm:3.3.2"
 	}
 }
 
@@ -18,6 +19,7 @@ apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
 apply plugin: "org.grails.internal.grails-plugin-publish"
 apply plugin: "asset-pipeline"
+apply plugin: "org.asciidoctor.jvm.convert"
 
 repositories {
 	maven { url "https://repo.grails.org/grails/core" }
@@ -67,4 +69,46 @@ assets {
 
 tasks.withType(Test) {
 	useJUnitPlatform()
+}
+
+def asciidoctorAttributes = [
+		projectVersion  	: projectVersion,
+		copyright           : 'Apache License, Version 2.0',
+		docinfo1            : 'true',
+		doctype             : 'book',
+		encoding            : 'utf-8',
+		'front-cover-image'  : 'image:cover.png[Front Cover,800,600]',
+		icons               : 'font',
+		id                  : project.name + ':' + project.version,
+		idprefix            : '',
+		idseparator         : '-',
+		lang                : 'en',
+		linkattrs           : true,
+		numbered            : '',
+		producer            : 'Asciidoctor',
+		revnumber           : project.version,
+		setanchors          : true,
+		'source-highlighter' : 'prettify',
+		toc                 : 'left',
+		toc2                : '',
+		toclevels           : '2'
+]
+
+asciidoctor {
+	attributes asciidoctorAttributes
+	baseDirFollowsSourceDir()
+	outputDir new File(buildDir, 'docs')
+	sourceDir = file('src/docs')
+	sources {
+		include 'index.adoc'
+	}
+}
+
+tasks.register("docs") {
+	description = "Generates documentation"
+	group = "documentation"
+	dependsOn ["asciidoctor"]
+	doLast {
+		new File(buildDir, 'docs/ghpages.html') << file('src/docs/index.tmpl').text.replaceAll('@VERSION@', project.version)
+	}
 }

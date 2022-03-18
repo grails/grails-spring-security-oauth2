@@ -1,4 +1,6 @@
 === Release History
 
+Please read release notes at https://github.com/grails/grails-spring-security-oauth2/releases for checking release information in the future.
+
 * Version 1.0.0
 ** released
