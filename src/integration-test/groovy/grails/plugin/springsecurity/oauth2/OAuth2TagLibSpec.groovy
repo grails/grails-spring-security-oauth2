@@ -2,6 +2,7 @@ package grails.plugin.springsecurity.oauth2
 
 import com.github.scribejava.core.model.OAuth2AccessToken
 import grails.plugin.springsecurity.SpringSecurityService
+import grails.testing.mixin.integration.Integration
 import grails.testing.web.taglib.TagLibUnitTest
 import spock.lang.Specification
 
@@ -14,9 +15,10 @@ import spock.lang.Specification
  * Created on 21.06.2016
  * @author MatrixCrawler
  */
-class OAuth2TagLibTest extends Specification implements TagLibUnitTest<OAuth2TagLib>{
+@Integration
+class OAuth2TagLibSpec extends Specification implements TagLibUnitTest<OAuth2TagLib>{
 
-    def "ifLoggedInWith should print body if session is valid"() {
+    void "ifLoggedInWith should print body if session is valid"() {
         given:
         def springSecurityService = Mock(SpringSecurityService)
         springSecurityService.isLoggedIn() >> {true}
@@ -39,7 +41,7 @@ class OAuth2TagLibTest extends Specification implements TagLibUnitTest<OAuth2Tag
         'twitter'  | _
     }
 
-    def "ifLoggedInWith should print empty string if session is invalid"() {
+    void "ifLoggedInWith should print empty string if session is invalid"() {
         given:
         def springSecurityService = Mock(SpringSecurityService)
         springSecurityService.isLoggedIn() >> {true}
@@ -60,7 +62,7 @@ class OAuth2TagLibTest extends Specification implements TagLibUnitTest<OAuth2Tag
         'linkedin' | "a_token_string"
     }
 
-    def "ifLoggedInWith should print empty string if user is not logged in"() {
+    void "ifLoggedInWith should print empty string if user is not logged in"() {
         given:
         def springSecurityService = Mock(SpringSecurityService)
         springSecurityService.isLoggedIn() >> {false}
@@ -72,7 +74,7 @@ class OAuth2TagLibTest extends Specification implements TagLibUnitTest<OAuth2Tag
         renderedContent == ''
     }
 
-    def "ifNotLoggedInWith should print body if user is not logged in"() {
+    void "ifNotLoggedInWith should print body if user is not logged in"() {
         given:
         def message = "Not_Logged_In"
         def springSecurityService = Mock(SpringSecurityService)

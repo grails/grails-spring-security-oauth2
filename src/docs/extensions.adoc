@@ -1,0 +1,24 @@
+## Extensions
+
+List of know extensions
+
+. https://github.com/grails-plugins/grails-spring-security-oauth2-google[Google]
+. https://github.com/MatrixCrawler/grails-spring-security-oauth2-facebook[Facebook]
+. https://github.com/rpalcolea/grails-spring-security-oauth2-github[Github]
+
+### How to create a new provider plugin?
+
+. Create a new plugin with command `grails create-plugin spring-security-oauth2-myProvider`.
+. Add the following plugins as dependency in the build:
+
+.build.gradle
+[source,groovy]
+----
+dependencies {
+    // ...
+    api 'org.grails.plugins:spring-security-core'
+    api 'org.grails.plugins:spring-security-oauth2'
+}
+----
+[start=3]
+. Create a service in your plugin that extends `OAuth2AbstractProviderService` and implement the abstract methods. You can override the other methods for fine-tuning if needed.
