@@ -4,7 +4,7 @@ import com.github.scribejava.core.model.OAuth2AccessToken
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.oauth2.exception.OAuth2Exception
 import grails.plugin.springsecurity.oauth2.token.OAuth2SpringToken
-import grails.plugin.springsecurity.userdetails.GrailsUser
+import grails.testing.mixin.integration.Integration
 import grails.testing.web.controllers.ControllerUnitTest
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -18,10 +18,11 @@ import spock.lang.Unroll
  * Created on 21.06.2016
  * @author MatrixCrawler
  */
-class SpringSecurityOAuth2ControllerTest extends Specification implements ControllerUnitTest<SpringSecurityOAuth2Controller> {
+@Integration
+class SpringSecurityOAuth2ControllerSpec extends Specification implements ControllerUnitTest<SpringSecurityOAuth2Controller> {
 
 	@Unroll
-	def "Registration command objects for #loginId validating correctly"() {
+	void "Registration command objects for #loginId validating correctly"() {
 
 		given: "a command object"
 		OAuth2CreateAccountCommand createAccountCommand = new OAuth2CreateAccountCommand()
@@ -49,7 +50,7 @@ class SpringSecurityOAuth2ControllerTest extends Specification implements Contro
 
 	}
 
-	def "authenticate should throw exception if request is missing provider"() {
+	void "authenticate should throw exception if request is missing provider"() {
 		given:
 		params.provider = provider
 		def springSecurityOauth2BaseService = Mock(SpringSecurityOauth2BaseService)
@@ -68,7 +69,7 @@ class SpringSecurityOAuth2ControllerTest extends Specification implements Contro
 		null     | _
 	}
 
-	def "onSuccess should throw exception if request is missing data"() {
+	void "onSuccess should throw exception if request is missing data"() {
 		given:
 		params.provider = provider
 		def springSecurityOauth2BaseService = Mock(SpringSecurityOauth2BaseService)
@@ -86,7 +87,7 @@ class SpringSecurityOAuth2ControllerTest extends Specification implements Contro
 		null     | _
 	}
 
-	def "onSuccess should throw exception if session is missing data"() {
+	void "onSuccess should throw exception if session is missing data"() {
 		given:
 		params.provider = provider
 		def springSecurityOauth2BaseService = Mock(SpringSecurityOauth2BaseService)
@@ -107,7 +108,7 @@ class SpringSecurityOAuth2ControllerTest extends Specification implements Contro
 	}
 
 	// now askToLinkOrCreateAccountUri is hardcoded, so this test is redundant
-	def "onSuccess should throw exception if askToLinkOrCreateAccountUri is not set"() {
+	void "onSuccess should throw exception if askToLinkOrCreateAccountUri is not set"() {
 		given:
 		OAuth2SpringToken authToken = Mock(OAuth2SpringToken)
 		params.provider = provider
@@ -133,7 +134,7 @@ class SpringSecurityOAuth2ControllerTest extends Specification implements Contro
 		'facebook' | _
 	}
 
-	def "onSuccess should redirect to askToLinkOrCreateAccountUri if the user is not logged in"() {
+	void "onSuccess should redirect to askToLinkOrCreateAccountUri if the user is not logged in"() {
 		given:
 		OAuth2SpringToken authToken = Mock(OAuth2SpringToken)
 		params.provider = provider
@@ -156,7 +157,7 @@ class SpringSecurityOAuth2ControllerTest extends Specification implements Contro
 		'facebook' | 302
 	}
 
-	def "onSuccess should redirect to defaultTargeturl if user is logged in"() {
+	void "onSuccess should redirect to defaultTargeturl if user is logged in"() {
 		given:
 		def token = Stub(OAuth2AccessToken) {
 			getRawResponse() >> "a=1&b=2"
@@ -183,7 +184,7 @@ class SpringSecurityOAuth2ControllerTest extends Specification implements Contro
 		'facebook' | 302
 	}
 
-	def "linkAccount should return view if user is not logged in"() {
+	void "linkAccount should return view if user is not logged in"() {
 		given:
 		def token = Stub(OAuth2AccessToken) {
 			getRawResponse() >> "a=1&b=2"
@@ -201,25 +202,4 @@ class SpringSecurityOAuth2ControllerTest extends Specification implements Contro
 	}
 }
 
-/**
- * A basic implementation for oauth token for a loggedin user.
- */
-class TestOAuth2SpringToken extends OAuth2SpringToken {
 
-	TestOAuth2SpringToken(OAuth2AccessToken token, boolean json) {
-		super(token, json)
-		this.principal = new GrailsUser("username", "password", true, true, true, true, [], 1L)
-	}
-
-	String getProviderName() {
-		return "provider"
-	}
-
-	String getSocialId() {
-		return "socialId"
-	}
-
-	String getScreenName() {
-		return "screenName"
-	}
-}
