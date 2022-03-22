@@ -33,7 +33,7 @@ dependencies {
 	compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
 	compileOnly 'org.grails:grails-dependencies'
 	compileOnly "org.grails:grails-plugin-services"
-	api 'com.github.scribejava:scribejava-apis:6.8.1'
+	api 'com.github.scribejava:scribejava-apis:6.9.0'
 	api 'org.grails.plugins:spring-security-core:5.0.0'
 
 	console "org.grails:grails-console"
