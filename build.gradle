@@ -113,7 +113,7 @@ asciidoctor {
 tasks.register("docs") {
 	description = "Generates documentation"
 	group = "documentation"
-	dependsOn ["asciidoctor"]
+	dependsOn(tasks.named("asciidoctor"))
 	doLast {
 		new File(buildDir, 'docs/ghpages.html') << file('src/docs/index.tmpl').text.replaceAll('@VERSION@', project.version)
 	}
