@@ -39,7 +39,7 @@ dependencies {
 	console "org.grails:grails-console"
 	profile "org.grails.profiles:web-plugin"
 
-	runtimeOnly "com.bertramlabs.plugins:asset-pipeline-grails:3.2.4"
+	runtimeOnly "com.bertramlabs.plugins:asset-pipeline-grails:3.4.3"
 
 	testImplementation "org.springframework.boot:spring-boot-autoconfigure"
 	testImplementation "org.springframework.boot:spring-boot-starter-actuator"
