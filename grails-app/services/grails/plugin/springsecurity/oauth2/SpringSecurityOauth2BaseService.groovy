@@ -25,12 +25,14 @@ import grails.plugin.springsecurity.oauth2.token.OAuth2SpringToken
 import grails.plugin.springsecurity.oauth2.util.OAuth2ProviderConfiguration
 import grails.plugin.springsecurity.userdetails.GormUserDetailsService
 import grails.plugin.springsecurity.userdetails.GrailsUser
+import grails.plugin.springsecurity.userdetails.GrailsUserDetailsService
 import groovy.util.logging.Slf4j
 import org.apache.commons.lang.exception.ExceptionUtils
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 
 @Transactional
 @Slf4j
@@ -44,6 +46,8 @@ class SpringSecurityOauth2BaseService {
 
     GrailsApplication grailsApplication
     AuthenticationManager authenticationManager
+
+    GrailsUserDetailsService userDetailsService
 
     OAuth2SpringToken createAuthToken(String providerName, OAuth2AccessToken scribeToken) {
         def providerService = getProviderService(providerName)
@@ -109,10 +113,14 @@ class SpringSecurityOauth2BaseService {
 
         // authorities
 
-        String authoritiesPropertyName = conf.userLookup.authoritiesPropertyName
-        String authorityPropertyName = conf.authority.nameField
-        Collection<?> userAuthorities = user."${authoritiesPropertyName}"
-        def authorities = userAuthorities.collect { new SimpleGrantedAuthority(it."${authorityPropertyName}") }
+//        String authoritiesPropertyName = conf.userLookup.authoritiesPropertyName
+//        String authorityPropertyName = conf.authority.nameField
+//        Collection<?> userAuthorities = user."${authoritiesPropertyName}"
+        // def authorities = userAuthorities.collect { new SimpleGrantedAuthority(it."${authorityPropertyName}") }
+
+//        use GrailsUserDetailsService get authorities.
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username,true)
+        def authorities= userDetails.authorities
 
         oAuthToken.principal = new GrailsUser(username, password, enabled, !accountExpired, !passwordExpired,
                 !accountLocked, authorities ?: [GormUserDetailsService.NO_ROLE], user.id)
