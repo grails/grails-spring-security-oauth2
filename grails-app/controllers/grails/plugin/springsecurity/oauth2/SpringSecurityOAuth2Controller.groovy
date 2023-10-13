@@ -35,6 +35,7 @@ import org.springframework.web.servlet.ModelAndView
  * Based on SpringSecurityOAuthController:2.1.0.RC4
  */
 @Secured('permitAll')
+@Slf4j
 class SpringSecurityOAuth2Controller {
 
     public static final String SPRING_SECURITY_OAUTH_TOKEN = 'springSecurityOAuthToken'
