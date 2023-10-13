@@ -61,10 +61,6 @@ This plugin provides the capability to authenticate via oauth. Depends on grails
                 return
             }
 
-            if (!hasProperty('log')) {
-                this.metaClass.log = LoggerFactory.getLogger(SpringSecurityOauth2GrailsPlugin)
-            }
-
             if (printStatusMessages) {
                 println("Configuring Spring Security OAuth2 plugin...")
             }
