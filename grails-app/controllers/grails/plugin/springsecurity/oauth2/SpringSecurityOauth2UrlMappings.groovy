@@ -7,7 +7,7 @@ import grails.util.Holders
 class SpringSecurityOauth2UrlMappings {
 
     static mappings = {
-        def active = Holders.grailsApplication.config.grails?.plugin?.springsecurity?.oauth2?.active
+        def active = Holders.grailsApplication.config.getProperty('grails.plugin.springsecurity.oauth2.active', Boolean, true)
         def enabled = (active instanceof Boolean) ? active : true
         if (enabled && SpringSecurityUtils.securityConfig?.active) {
             "/oauth2/$provider/authenticate"(controller: 'springSecurityOAuth2', action: 'authenticate')

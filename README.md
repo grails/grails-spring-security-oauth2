@@ -9,18 +9,20 @@ Main differences with the Grails 2 plugin:
 - simplest code as possible
 - easy to extend
 
+Documentation
+------------
+[User Guide](https://grails.github.io/grails-spring-security-oauth2/)
+
 Installation
 ------------
-Use [v1.2.x](https://github.com/grails-plugins/grails-spring-security-oauth2-google/releases/tag/v1.2.0) for Grails 3.0 to 3.2
-
-Use v1.3.x for Grails 3.3+.
+For Grails 5.3+
 
 Add the following dependencies in `build.gradle`
 ```
 dependencies {
 ...
-    compile 'org.grails.plugins:spring-security:3.2.+'
-    compile 'org.grails.plugins:spring-security-oauth2:1.2.0'
+    implementation 'org.grails.plugins:spring-security-core:5.2.1'
+    implementation 'org.grails.plugins:spring-security-oauth2:3.0.0'
 ...
 }
 ```

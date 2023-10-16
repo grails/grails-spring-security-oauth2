@@ -21,4 +21,5 @@ dependencies {
 }
 ----
 [start=3]
-. Create a service in your plugin that extends `OAuth2AbstractProviderService` and implement the abstract methods. You can override the other methods for fine-tuning if needed.
+. Create a service in your plugin that extends `OAuth2AbstractProviderService` and implement the abstract metho ds. You can override the
+other methods for fine-tuning if needed.

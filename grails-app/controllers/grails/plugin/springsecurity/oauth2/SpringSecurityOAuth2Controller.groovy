@@ -15,7 +15,6 @@
 package grails.plugin.springsecurity.oauth2
 
 import com.github.scribejava.core.model.OAuth2AccessToken
-import com.sun.istack.internal.Nullable
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.annotation.Secured
@@ -35,8 +34,8 @@ import org.springframework.web.servlet.ModelAndView
  *
  * Based on SpringSecurityOAuthController:2.1.0.RC4
  */
-@Slf4j
 @Secured('permitAll')
+@Slf4j
 class SpringSecurityOAuth2Controller {
 
     public static final String SPRING_SECURITY_OAUTH_TOKEN = 'springSecurityOAuthToken'
@@ -247,7 +246,7 @@ class SpringSecurityOAuth2Controller {
      * @param oAuthToken
      * @param redirectUrl
      */
-    protected void authenticateAndRedirect(@Nullable OAuth2SpringToken oAuthToken, redirectUrl) {
+    protected void authenticateAndRedirect(OAuth2SpringToken oAuthToken, redirectUrl) {
         session.removeAttribute SPRING_SECURITY_OAUTH_TOKEN
         SecurityContextHolder.context.authentication = oAuthToken
         redirect(redirectUrl instanceof Map ? redirectUrl : [uri: redirectUrl])
