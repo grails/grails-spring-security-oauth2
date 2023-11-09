@@ -641,7 +641,7 @@ class User {
 <h2 id="extensions">4. Extensions</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>List of know extensions</p>
+<p>List of known extensions</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -681,10 +681,204 @@ class User {
 <div class="olist arabic">
 <ol class="arabic" start="3">
 <li>
-<p>Create a service in your plugin that extends <code>OAuth2AbstractProviderService</code> and implement the abstract metho ds. You can override the
+<p>Create a Groovy class that extends <code>OAuth2SpringToken</code> and implement the abstract methods.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>getProviderName // gets the provider name
+getSocialId // is usually used for the  username
+getScreenName // is usually used for the email address</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="4">
+<li>
+<p>You may want to check if the scribe library has a default API built-in for your provider or create a Groovy class that
+extends <code>DefaultApi20</code> and implement the abstract methods.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>getAccessTokenEndpoint  // I would get this from config which is &lt;providers domain&gt;/oauth2/token
+getAuthorizationBaseUrl // I would get this from get this from config which is &lt;providers domain&gt;/oauth2/authorize
+getAccessTokenExtractor // In some implementations the `OpenIdJsonTokenExtractor` is used.</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="5">
+<li>
+<p>Create a service in your plugin that extends <code>OAuth2AbstractProviderService</code> and implement the abstract methods. You can override the
 other methods for fine-tuning if needed.</p>
 </li>
 </ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>getProviderID // whatever you want to call your provider.
+getApiClass // points to your API implementation
+getProfileScope // comes from config &lt;domain&gt;/oauth2/userInfo
+getScopeSeparator // from the implementation that I've see usually: " " is used.
+createSpringAuthToken // parses the OAuth2AccessToken to get the email and id that could be used
+                      // to look up the user and puts them in a OAuth2SpringToken.
+                      // This is also a good place to validate the token either inline or calling a separate method *</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>There maybe some variability between providers based on what is in the claims, but should be similar to this:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@Value('${grails.plugin.springsecurity.oauth2.providers.your_provider.api_key}')
+String appId
+
+def rawResponse = new JsonSlurper().parseText(accessToken.rawResponse)
+String encodedIdToken = rawResponse.id_token
+List&lt;String&gt; encodedIdTokenSegments = encodedIdToken.split('\\.')
+
+String payloadClaimsStr = new String(Base64Utils.decodeFromUrlSafeString(encodedIdTokenSegments[1]))
+Map payloadClaims = new JsonSlurper().parseText(payloadClaimsStr) as Map
+
+if (payloadClaims.aud != appId) {
+    throw new IllegalStateException("ID Token rejected: token specified incorrect recipient ID ${payloadClaims.aud}")
+}
+
+Integer now = new Date().time / 1000 as Integer // UNIX timestamp
+
+if (now &lt; payloadClaims.nbf) {
+    throw new IllegalStateException("ID Token rejected: token cannot be processed before ${payloadClaims.nbf}; current time is $now")
+}
+
+if (now &gt;= payloadClaims.exp) {
+    throw new IllegalStateException("ID Token rejected: token has expired")
+}
+
+if (now &lt; payloadClaims.iat) {
+    throw new IllegalStateException("ID Token rejected: token cannot be from the future!")
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Validating the token is important to security to make sure that the application client id is the same as what you sent to, because
+it prevents people from using tokens from other providers to try to grain access to your system.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="6">
+<li>
+<p>You can register your implementation of <code>OAuth2AbstractProviderService</code> in the plugin groovy file or if you can inline in the registration in BootStrap.groovy</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>try {
+    springSecurityOauth2BaseService.registerProvider(yourAuth2Service)
+} catch (OAuth2Exception exception) {
+    log.error("There was an oAuth2Exception Your provider has not been loaded", exception)
+}</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="6">
+<li>
+<p>In the app that uses any of the extensions you&#8217;ll want to set up a URL mapping like:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>"/oauth2/$provider/success"(controller: 'login', action: 'oauth2Success')</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then at that endpoint you can handle the user lookup, setting the authentication and redirecting, something like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="groovy">def oauth2Success(String provider) {
+    log.info "In oauth2Success with $provider"
+
+    if (!provider) {
+        log.warn "The Spring Security OAuth callback URL must include the 'provider' URL parameter"
+        throw new OAuth2Exception("The Spring Security OAuth callback URL must include the 'provider' URL parameter")
+    }
+
+    def sessionKey = springSecurityOauth2BaseService.sessionKeyForAccessToken(provider)
+
+    if (!session[sessionKey]) {
+        log.warn "No OAuth token in the session for provider '${provider}' your provider might require MFA before logging in to this server."
+        throw new OAuth2Exception("Authentication error for provider '${provider}' your provider might require MFA before logging in to this server.")
+    }
+
+    // Create the relevant authentication token and attempt to log in.
+    OAuth2SpringToken oAuthToken = createAuthToken(provider, session[sessionKey])
+
+    if (oAuthToken.principal instanceof GrailsUser) {
+        //provide you're own getDefaultTargetUrl method to replace with a string.
+        authenticateAndRedirect(oAuthToken, getDefaultTargetUrl())
+    } else {
+        // This OAuth account hasn't been registered against an internal
+        // account yet. Give the oAuthID the opportunity to create a new
+        // internal account or link to an existing one.
+        session[SpringSecurityOAuth2Controller.SPRING_SECURITY_OAUTH_TOKEN] = oAuthToken
+
+        def redirectUrl = springSecurityOauth2BaseService.getAskToLinkOrCreateAccountUri()
+
+        if (!redirectUrl) {
+            log.warn "grails.plugin.springsecurity.oauth.registration.askToLinkOrCreateAccountUri configuration option must be set"
+            throw new OAuth2Exception('Internal error')
+        }
+        log.debug "Redirecting to askToLinkOrCreateAccountUri: ${redirectUrl}"
+        redirect(redirectUrl instanceof Map ? redirectUrl : [uri: redirectUrl])
+    }
+}
+
+
+private OAuth2SpringToken createAuthToken(String providerName, OAuth2AccessToken scribeToken) {
+    def providerService = springSecurityOauth2BaseService.getProviderService(providerName)
+    OAuth2SpringToken oAuthToken = providerService.createSpringAuthToken(scribeToken)
+
+
+    def user
+
+    if(loadByUserName){
+        //provide your own security service or do a lookup manually.
+        user = securityService.loadUserByUsername(oAuthToken.getSocialId())
+    }
+
+    if(loadByEmail) {
+        //provide your own security service or do a lookup manually.
+        user = securityService.loadUserByEmailAddress(oAuthToken.getScreenName())
+    }
+
+    if (user) {
+        updateOAuthToken(oAuthToken, user)
+    }
+
+    return oAuthToken
+}
+
+private OAuth2SpringToken updateOAuthToken(OAuth2SpringToken oAuthToken, user) {
+    oAuthToken.principal = user
+    oAuthToken.authorities = user.authorities
+    oAuthToken.authenticated = true
+
+    return oAuthToken
+}
+
+
+protected void authenticateAndRedirect(OAuth2SpringToken oAuthToken, redirectUrl) {
+    session.removeAttribute SpringSecurityOAuth2Controller.SPRING_SECURITY_OAUTH_TOKEN
+    SecurityContextHolder.context.authentication = oAuthToken
+    redirect(redirectUrl instanceof Map ? redirectUrl : [uri: redirectUrl])
+}</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -693,7 +887,7 @@ other methods for fine-tuning if needed.</p>
 <div id="footer">
 <div id="footer-text">
 Version 2.0.1-SNAPSHOT<br>
-Last updated 2023-10-25 21:36:06 UTC
+Last updated 2023-11-09 13:24:44 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
