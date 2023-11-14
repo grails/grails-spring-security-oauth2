@@ -39,7 +39,7 @@ dependencies {
 	compileOnly 'org.grails:grails-dependencies'
 	compileOnly "org.grails:grails-plugin-services"
 	api 'com.github.scribejava:scribejava-apis:8.3.3'
-	api 'org.grails.plugins:spring-security-core:5.3.0'
+	api 'org.grails.plugins:spring-security-core:6.1.0'
 
 	console "org.grails:grails-console"
 	profile "org.grails.profiles:web-plugin"
