@@ -47,7 +47,7 @@ dependencies {
 	testImplementation "org.springframework.boot:spring-boot-autoconfigure"
 	testImplementation "org.springframework.boot:spring-boot-starter-actuator"
 	testImplementation "org.springframework.boot:spring-boot-starter-tomcat"
-	testImplementation "cglib:cglib-nodep:2.2.2"
+	testImplementation "cglib:cglib-nodep:3.3.0"
 	testImplementation "org.grails:grails-gorm-testing-support"
 	testImplementation "org.grails:grails-web-testing-support"
 
