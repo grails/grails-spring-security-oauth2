@@ -10,16 +10,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      WORKSPACE: ${{ github.workspace }}
-      GRADLE_OPTS: -Xmx1500m -Dfile.encoding=UTF-8
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'adopt'
-          java-version: 8
+          java-version: 11
       - name: Run Build
         id: build
         uses: gradle/gradle-build-action@v2
@@ -39,7 +36,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'adopt'
-          java-version: 8
+          java-version: 11
       - name: Publish Artifacts
         id: publish
         uses: gradle/gradle-build-action@v2
@@ -70,5 +67,5 @@ jobs:
           BRANCH: gh-pages
           FOLDER: build/docs
           DOC_FOLDER: gh-pages
-          COMMIT_EMAIL: behlp@objectcomputing.com
+          COMMIT_EMAIL: behlp@unityfoundation.io
           COMMIT_NAME: Puneet Behl
