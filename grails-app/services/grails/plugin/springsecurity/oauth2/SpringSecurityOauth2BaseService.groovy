@@ -157,7 +157,7 @@ class SpringSecurityOauth2BaseService {
                     successUrl: successUrl,
                     failureUrl: failureUrl,
                     scope: scopes ? providerService.getScopes() + providerService.scopeSeparator + scopes : providerService.getScopes(),
-                    debug: grailsApplication.config.getProperty('oauth2.debug') ? grailsApplication.config.getProperty('oauth2.debug') : false
+                    debug: grailsApplication.config.getProperty('grails.plugin.springsecurity.oauth2.debug', Boolean, false)
             ))
             providerService.init(_providerConfigurationMap.get(providerService.providerID))
             providerServiceMap.put(providerService.providerID, providerService)
@@ -165,7 +165,7 @@ class SpringSecurityOauth2BaseService {
     }
 
     private def getConfigValue(String provider, String key) {
-        grailsApplication.config.getAt("grails.plugin.springsecurity.oauth2.providers.${provider}.${key}") ?: null
+        grailsApplication.config.getProperty("grails.plugin.springsecurity.oauth2.providers.${provider}.${key}") ?: null
     }
     /**
      * @return The base url
@@ -196,7 +196,7 @@ class SpringSecurityOauth2BaseService {
      * @return The uri pointing to the page ask to link or create account
      */
     def getAskToLinkOrCreateAccountUri() {
-        def askToLinkOrCreateAccountUri = grailsApplication.config.grails.plugin.springsecurity.oauth2.registration.askToLinkOrCreateAccountUri ?: '/oauth2/ask'
+        def askToLinkOrCreateAccountUri = grailsApplication.config.getProperty('grails.plugin.springsecurity.oauth2.registration.askToLinkOrCreateAccountUri', String, '/oauth2/ask')
         return askToLinkOrCreateAccountUri
     }
 
@@ -237,7 +237,7 @@ class SpringSecurityOauth2BaseService {
      * @return The OAuthID class name
      */
     protected String lookupOAuthIdClassName() {
-        def domainClass = grailsApplication.config.grails.plugin.springsecurity.oauth2.domainClass ?: 'OAuthID'
+        def domainClass = grailsApplication.config.getProperty('grails.plugin.springsecurity.oauth2.domainClass', 'OAuthID')
         return domainClass
     }
 
@@ -294,7 +294,7 @@ class SpringSecurityOauth2BaseService {
      * @return The role names for a newly registered user
      */
     def getRoleNames() {
-        def roleNames = grailsApplication.config.grails.plugin.springsecurity.oauth2.registration.roleNames ?: ['ROLE_USER']
+        def roleNames = grailsApplication.config.getProperty('grails.plugin.springsecurity.oauth2.registration.roleNames', List<String>, ['ROLE_USER'])
         return roleNames
     }
 }
