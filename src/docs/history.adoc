@@ -2,7 +2,11 @@
 
 Please read release notes at https://github.com/grails/grails-spring-security-oauth2/releases for checking release information in the future.
 
-* Version 3.0.0
+* Version 2.0.2
+** Upgraded to Spring Security Core 6.1.0
+* Version 2.0.1
+** Update plugin com.gradle.common-custom-user-data-gradle-plugin to v1.12
+* Version 2.0.0
 ** Upgraded to Grails 5.3 with Groovy 3..0.11
 ** Fixed conflict with logback-config library.
 * Version 2.0.0-RC1
