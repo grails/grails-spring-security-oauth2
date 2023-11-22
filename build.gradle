@@ -199,6 +199,7 @@ tasks.register("docs") {
 	description = "Generates documentation"
 	group = "documentation"
 	dependsOn(tasks.named("asciidoctor"))
+	mustRunAfter("build")
 	doLast {
 		new File(buildDir, 'docs/ghpages.html') << file('src/docs/index.tmpl').text.replaceAll('@VERSION@', project.version)
 	}
@@ -206,4 +207,8 @@ tasks.register("docs") {
 
 configure([groovydoc]) {
 	classpath += configurations.documentation
+}
+
+tasks.named("build").configure {
+	mustRunAfter("docs")
 }
