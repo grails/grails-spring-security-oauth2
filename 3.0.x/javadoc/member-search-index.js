@@ -1,0 +1,1 @@
+memberSearchIndex = [{"p":"grails.plugin.springsecurity.oauth2.exception","c":"OAuth2Exception","l":"OAuth2Exception(String, Throwable)","url":"%3Cinit%3E(java.lang.String,java.lang.Throwable)"},{"p":"grails.plugin.springsecurity.oauth2.exception","c":"OAuth2Exception","l":"OAuth2Exception(String)","url":"%3Cinit%3E(java.lang.String)"}]
