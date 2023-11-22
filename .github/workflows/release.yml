@@ -48,7 +48,7 @@ jobs:
       - name: Export Gradle Properties
         uses: micronaut-projects/github-actions/export-gradle-properties@master
       - name: Publish to Github Pages
-        if: steps.docs.outcome == 'success'
+        if: success()
         uses: micronaut-projects/github-pages-deploy-action@grails
         env:
           SKIP_SNAPSHOT: ${{ contains(steps.release_version.outputs.release_version, 'M') }}
@@ -61,7 +61,7 @@ jobs:
           COMMIT_NAME: Puneet Behl
           VERSION: ${{ steps.release_version.outputs.release_version }}
       - name: Run post-release
-        if: steps.publish.outcome == 'success' && steps.docs.outcome == 'success' && success()
+        if: success()
         uses: micronaut-projects/github-actions/post-release@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
