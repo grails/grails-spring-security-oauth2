@@ -51,7 +51,7 @@ dependencies {
 	testImplementation "org.grails:grails-gorm-testing-support"
 	testImplementation "org.grails:grails-web-testing-support"
 
-	documentation "com.github.javaparser:javaparser-core:3.25.6"
+	documentation "com.github.javaparser:javaparser-core:3.25.7"
 }
 
 ext."signing.keyId" = project.hasProperty("signing.keyId") ? project.getProperty('signing.keyId') : System.getenv('SIGNING_KEY')
