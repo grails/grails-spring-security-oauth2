@@ -31,16 +31,15 @@ import org.apache.commons.lang.exception.ExceptionUtils
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.AuthenticationException
-import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 @Transactional
 @Slf4j
 class SpringSecurityOauth2BaseService {
 
-/**
- * Map for storing the different OAuth2Provider
- */
+    /**
+     * Map for storing the different OAuth2Provider
+     */
     Map<String, OAuth2AbstractProviderService> providerServiceMap = new HashMap<>()
     private Map<String, OAuth2ProviderConfiguration> _providerConfigurationMap = new HashMap<>()
 
@@ -112,13 +111,6 @@ class SpringSecurityOauth2BaseService {
         boolean passwordExpired = passwordExpiredPropertyName ? user."${passwordExpiredPropertyName}" : false
 
         // authorities
-
-//        String authoritiesPropertyName = conf.userLookup.authoritiesPropertyName
-//        String authorityPropertyName = conf.authority.nameField
-//        Collection<?> userAuthorities = user."${authoritiesPropertyName}"
-        // def authorities = userAuthorities.collect { new SimpleGrantedAuthority(it."${authorityPropertyName}") }
-
-//        use GrailsUserDetailsService get authorities.
         UserDetails userDetails = userDetailsService.loadUserByUsername(username,true)
         def authorities= userDetails.authorities
 
