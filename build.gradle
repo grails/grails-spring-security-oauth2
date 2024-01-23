@@ -212,7 +212,3 @@ configure([groovydoc]) {
 tasks.named("build").configure {
 	mustRunAfter("docs")
 }
-
-tasks.withType(Jar) {
-	archiveClassifier.set('')
-}
