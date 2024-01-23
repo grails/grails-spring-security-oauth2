@@ -41,16 +41,8 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: grails-gsp-${{ steps.release_version.outputs.value }}.zip
-          path: build/distributions/spring-security-oauth2-${{ steps.release_version.outputs.value }}.zip
-      - name: Upload artifacts to the Github release
-        if: success()
-        id: upload_artifact
-        uses: Roang-zero1/github-upload-release-artifacts-action@master
-        with:
-          args: build/distributions/spring-security-oauth2-${{ steps.release_version.outputs.value }}.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: spring-security-oauth2-${{ steps.release_version.outputs.value }}.jar 
+          path: build/distributions/spring-security-oauth2-${{ steps.release_version.outputs.value }}-plain.jar
       - name: Generate secring file
         env:
           SECRING_FILE: ${{ secrets.SECRING_FILE }}
