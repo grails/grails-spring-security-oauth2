@@ -41,4 +41,8 @@ class OAuth2ProviderConfiguration {
     String successUrl
 
     String failureUrl
+
+    Integer connectTimeout
+
+    Integer readTimeout
 }

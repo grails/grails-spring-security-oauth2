@@ -111,7 +111,10 @@ abstract class OAuth2AbstractProviderService implements OAuth2ProviderService {
     OAuth20Service buildScribeService(OAuth2ProviderConfiguration providerConfiguration) {
         ServiceBuilder serviceBuilder = new ServiceBuilder(providerConfiguration.apiKey)
                 .apiSecret(providerConfiguration.apiSecret)
-        if (providerConfiguration.callbackUrl) {
+                .state(secretState)
+                .connectTimeout(providerConfiguration.connectTimeout).readTimeout(providerConfiguration.readTimeout)
+
+      if (providerConfiguration.callbackUrl) {
             serviceBuilder.callback(providerConfiguration.callbackUrl)
         }
         if (providerConfiguration.scope) {
