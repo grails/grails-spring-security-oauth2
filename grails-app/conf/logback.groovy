@@ -8,7 +8,7 @@ appender('STDOUT', ConsoleAppender) {
     }
 }
 
-logger 'grails.plugin.springsecurity.oauth2', TRACE
+//logger 'grails.plugin.springsecurity.oauth2', TRACE
 root(ERROR, ['STDOUT'])
 
 def targetDir = BuildSettings.TARGET_DIR
