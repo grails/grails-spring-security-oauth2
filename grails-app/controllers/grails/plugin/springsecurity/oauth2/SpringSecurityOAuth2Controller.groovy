@@ -25,6 +25,7 @@ import groovy.util.logging.Slf4j
 import org.apache.commons.lang.StringUtils
 import org.apache.commons.lang.exception.ExceptionUtils
 import org.apache.commons.validator.routines.UrlValidator
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.servlet.ModelAndView
 
@@ -43,6 +44,9 @@ class SpringSecurityOAuth2Controller {
     SpringSecurityOauth2BaseService springSecurityOauth2BaseService
     SpringSecurityService springSecurityService
 
+    @Value('${security.oauth2.controller.validateAuthorizationUrl:true}')
+    boolean validateAuthorizationUrl = true
+    UrlValidator urlValidator = UrlValidator.instance
     /**
      * Authenticate
      */
@@ -54,9 +58,11 @@ class SpringSecurityOAuth2Controller {
         log.debug "authenticate ${providerName}"
         String url = springSecurityOauth2BaseService.getAuthorizationUrl(providerName)
         log.debug "redirect url from s2oauthservice=${url}"
-        if (!UrlValidator.instance.isValid(url)) {
+        if (validateAuthorizationUrl && !urlValidator.isValid(url)) {
+            log.error("Authorization url for provider '${providerName}' is invalid: ${url}")
             flash.message = "Authorization url for provider '${providerName}' is invalid."
             redirect(controller: 'login', action: 'index')
+            return
         }
         redirect(url: url)
     }

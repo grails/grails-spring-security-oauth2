@@ -6,6 +6,7 @@ import grails.plugin.springsecurity.oauth2.exception.OAuth2Exception
 import grails.plugin.springsecurity.oauth2.token.OAuth2SpringToken
 import grails.testing.mixin.integration.Integration
 import grails.testing.web.controllers.ControllerUnitTest
+import org.apache.commons.validator.routines.UrlValidator
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -200,6 +201,33 @@ class SpringSecurityOAuth2ControllerSpec extends Specification implements Contro
 		response
 		view == '/springSecurityOAuth2/ask'
 	}
+
+    void "authenticate use custom url validator"() {
+        given:
+		params.provider = 'somewhat'
+        def springSecurityOauth2BaseService = Mock(SpringSecurityOauth2BaseService)
+		springSecurityOauth2BaseService.getAuthorizationUrl(_) >> {url}
+        controller.springSecurityOauth2BaseService = springSecurityOauth2BaseService
+		if (validator == 'null') { controller.validateAuthorizationUrl = false }
+		if (validator == 'custom') {
+			def v = Mock(UrlValidator)
+			v.isValid(_) >> { true }
+			controller.urlValidator = v
+		}
+
+        when:
+        controller.authenticate()
+
+        then:
+            response.redirectUrl == shouldFail ? '/login/index' : url
+		where:
+		url   					 | validator | shouldFail
+		'https://www.google.com' | 'default' | false
+		'https://intranet.local' | 'default' | true
+		'https://intranet.local' | 'null' 	 | false
+		'https://intranet.local' | 'custom'	 | false
+    }
+
 }
 
 
