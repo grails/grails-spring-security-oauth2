@@ -122,6 +122,15 @@ class SpringSecurityOauth2BaseService {
         return oAuthToken
     }
 
+    private String buildUrl(OAuth2ProviderService providerService, String baseURL, String type, String alternative = null) {
+        String configValue = getConfigValue(providerService.providerID, type)
+        if (!configValue?.startsWith("/")) {
+            configValue
+        } else {
+            configValue ? baseURL + configValue : alternative
+        }
+    }
+
     /**
      * Register the provider into the service
      * @param providerService
@@ -133,11 +142,11 @@ class SpringSecurityOauth2BaseService {
             log.warn("There is already a provider with the name " + providerService.getProviderID() + " registered")
         } else {
             String baseURL = getBaseUrl()
-            def callbackURL = getConfigValue(providerService.providerID, "callback") ? baseURL + getConfigValue(providerService.providerID, "callback") : baseURL + "/oauth2/" + providerService.getProviderID() + "/callback"
+            def callbackURL = buildUrl(providerService, baseURL, "callback", baseURL + "/oauth2/" + providerService.getProviderID() + "/callback")
             log.debug("Callback URL: " + callbackURL)
-            def successUrl = getConfigValue(providerService.providerID, "successUri") ? baseURL + getConfigValue(providerService.providerID, "successUri") : null
+            def successUrl = buildUrl(providerService, baseURL, "successUri")
             log.debug("Success URL: " + successUrl)
-            def failureUrl = getConfigValue(providerService.providerID, "failureUri") ? baseURL + getConfigValue(providerService.providerID, "failureUri") : null
+            def failureUrl = buildUrl(providerService, baseURL, "failureUri")
             log.debug("Failure URL: " + failureUrl)
             def scopes = getConfigValue(providerService.providerID, "scopes") ?: null
             log.debug("Additional Scopes: " + scopes)
@@ -189,7 +198,7 @@ class SpringSecurityOauth2BaseService {
      */
     String getFailureUrl(String providerName) {
         def providerService = getProviderService(providerName)
-        providerService.failureUrl ?: baseUrl + "/oauth2/" + providerName + "/success"
+        providerService.failureUrl ?: baseUrl + "/oauth2/" + providerName + "/failure"
     }
 
     /**
